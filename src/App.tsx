@@ -61,10 +61,12 @@ const App = () => {
             results.data.result.data[0].data;
           const data = populationResponse.map((population) => population.value);
           const seriesData = { name, data };
-          const prefectureData = [...series, seriesData];
-          setSeries(prefectureData);
+          const seriesArray = [...series, seriesData];
+          setSeries(seriesArray);
         });
     } else {
+      const filterSeries = series.filter((series) => series.name !== name);
+      setSeries(filterSeries);
     }
   };
 
@@ -84,8 +86,13 @@ const App = () => {
             </InlineDiv>
           );
         })}
-      <div></div>
-      <Chart series={series} />
+      {!series.length ? (
+        <div>
+          上のチェックボックスから都道府県を選択するとグラフが表示されます。
+        </div>
+      ) : (
+        <Chart series={series} />
+      )}
     </div>
   );
 };
