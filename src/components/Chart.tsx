@@ -2,16 +2,25 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
 type Props = {
-  series?: {
+  chartData?: {
     name: string;
     data: number[];
+    categories: number[];
   }[];
 };
 
-export const Chart: React.FC<Props> = ({ series }) => {
+export const Chart: React.FC<Props> = ({ chartData }) => {
+  const series = chartData?.map(({ name, data }) => {
+    return { name, data };
+  });
+  const categories = chartData?.map(({ categories }) => categories).flat();
+
   const options = {
     title: {
-      text: "prefecture population chart",
+      text: "各都道府県の総人口推移",
+      style: {
+        fontWeight: "bold",
+      },
     },
     yAxis: {
       title: {
@@ -22,32 +31,16 @@ export const Chart: React.FC<Props> = ({ series }) => {
       title: {
         text: "年",
       },
-    },
-    legend: {
-      layout: "vertical",
-      align: "right",
-      verticalAlign: "middle",
-    },
-
-    accessibility: {
-      enabled: false,
+      categories,
     },
 
     series,
 
-    plotOptions: {
-      series: {
-        label: {
-          connectorAllowed: false,
-        },
-        pointStart: 1960,
-      },
-    },
     responsive: {
       rules: [
         {
           condition: {
-            maxWidth: 500,
+            maxWidth: 800,
           },
           chartOptions: {
             legend: {
