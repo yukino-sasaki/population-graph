@@ -3,6 +3,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import "./App.css";
 import { Chart } from "./Chart";
+import { devices } from "./responsive/media-queries";
 
 const key = "wjaB4yAtWUYTi8UGg209wJdXBQGVquombJXeEa1F";
 
@@ -21,10 +22,45 @@ type PopulationType = {
 type SeriesType = {
   name: string;
   data: number[];
+  categories: number[];
 }[];
 
 const InlineDiv = styled.div`
   display: inline;
+  margin: 4px;
+`;
+
+const ContainerDiv = styled.div`
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
+  height: 100vh;
+  padding: 0 5%;
+  margin: 0 auto;
+
+  @media ${devices.tablet} {
+    width: 800px;
+  }
+`;
+
+const PrefectureDiv = styled.div`
+  width: 100%;
+
+  @media ${devices.tablet} {
+    width: 800px;
+  }
+`;
+
+const PrefectureTitleDiv = styled.div`
+  margin: 10px 0;
+  font-family: bold;
+  font-size: 36px;
+`;
+
+const ChartMessageDiv = styled.div`
+  border: 2px solid lightblue;
+  text-align: center;
+  padding: 20px;
 `;
 
 const App = () => {
@@ -60,9 +96,13 @@ const App = () => {
           const populationResponse: PopulationType =
             results.data.result.data[0].data;
           const data = populationResponse.map((population) => population.value);
-          const seriesData = { name, data };
-          const seriesArray = [...series, seriesData];
-          setSeries(seriesArray);
+          const categoriesData = populationResponse.map(
+            (population) => population.year
+          );
+          const chartData = { name, data, categories: categoriesData };
+
+          const chartArray = [...series, chartData];
+          setSeries(chartArray);
         });
     } else {
       const filterSeries = series.filter((series) => series.name !== name);
@@ -71,29 +111,32 @@ const App = () => {
   };
 
   return (
-    <div className="App">
-      {prefectures &&
-        prefectures?.result.map(({ prefCode, prefName }, index) => {
-          return (
-            <InlineDiv key={index}>
-              <input
-                type="checkbox"
-                name={prefName}
-                id={String(prefCode)}
-                onChange={(e) => onChangePrefecture(e)}
-              />
-              <label>{prefName}</label>
-            </InlineDiv>
-          );
-        })}
+    <ContainerDiv>
+      <PrefectureDiv>
+        <PrefectureTitleDiv>都道府県</PrefectureTitleDiv>
+        {prefectures &&
+          prefectures?.result.map(({ prefCode, prefName }, index) => {
+            return (
+              <InlineDiv key={index}>
+                <input
+                  type="checkbox"
+                  name={prefName}
+                  id={String(prefCode)}
+                  onChange={(e) => onChangePrefecture(e)}
+                />
+                <label>{prefName}</label>
+              </InlineDiv>
+            );
+          })}
+      </PrefectureDiv>
       {!series.length ? (
-        <div>
+        <ChartMessageDiv>
           上のチェックボックスから都道府県を選択するとグラフが表示されます。
-        </div>
+        </ChartMessageDiv>
       ) : (
-        <Chart series={series} />
+        <Chart chartData={series} />
       )}
-    </div>
+    </ContainerDiv>
   );
 };
 
