@@ -1,8 +1,7 @@
 import axios from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
-import "./App.css";
-import { Chart } from "./Chart";
+import { Chart } from "./components/Chart";
 import { devices } from "./responsive/media-queries";
 
 const key = "wjaB4yAtWUYTi8UGg209wJdXBQGVquombJXeEa1F";
@@ -53,7 +52,7 @@ const PrefectureDiv = styled.div`
 
 const PrefectureTitleDiv = styled.div`
   margin: 10px 0;
-  font-family: bold;
+  font-weight: bold;
   font-size: 36px;
 `;
 
@@ -131,7 +130,7 @@ const App = () => {
       </PrefectureDiv>
       {!series.length ? (
         <ChartMessageDiv>
-          上のチェックボックスから都道府県を選択するとグラフが表示されます。
+          上のチェックボックスから都道府県を選択するとその都道府県の総人口推移のグラフが表示されます。
         </ChartMessageDiv>
       ) : (
         <Chart chartData={series} />

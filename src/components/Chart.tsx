@@ -14,11 +14,13 @@ export const Chart: React.FC<Props> = ({ chartData }) => {
     return { name, data };
   });
   const categories = chartData?.map(({ categories }) => categories).flat();
-  console.log(categories?.flat());
 
   const options = {
     title: {
-      text: "prefecture population chart",
+      text: "各都道府県の総人口推移",
+      style: {
+        fontWeight: "bold",
+      },
     },
     yAxis: {
       title: {
